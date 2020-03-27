@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+
+const authRouter = require("./auth/router");
+const userRouter = require("./user/router");
 const ingredientRouter = require("./ingredient/router");
 const recipeRouter = require("./recipe/router");
 const recipeIngredientRouter = require("./recipeIngredient/router");
@@ -14,6 +17,8 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.use(corsMiddleware);
 app.use(jsonParser);
+app.use(authRouter);
+app.use(userRouter);
 app.use(ingredientRouter);
 app.use(recipeRouter);
 app.use(recipeIngredientRouter);
