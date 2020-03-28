@@ -9,7 +9,6 @@ router.get("/ingredient", (request, response, next) => {
   const offset = request.query.offset || 0;
   try {
     Ingredient.findAndCountAll({
-
       limit,
       offset
     }).then(result => {
@@ -52,14 +51,17 @@ router.get("/ingredient/:id", async (request, response, next) => {
 
 // get all recipes for an ingredient
 router.get("/ingredient/:id/recipe", async (request, response, next) => {
-  const ingredient = await Ingredient.findOne({
-    where: {
-      id: request.body.id
-    }
-  });
+  try {
+    const ingredient = await Ingredient.findOne({
+      where: { id: request.params.id }
+    });
 
-  const recipes = await ingredient.getRecipes();
-  console.log(recipes);
+    const recipes = await ingredient.getRecipes();
+
+    response.status(200).json(recipes);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

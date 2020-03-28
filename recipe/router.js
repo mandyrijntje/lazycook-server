@@ -77,14 +77,17 @@ router.get("/recipe/:id", async (request, response, next) => {
 
 // get all ingredients for a recipe
 router.get("/recipe/:id/ingredient", async (request, response, next) => {
-  const recipe = await Recipe.findOne({
-    where: {
-      id: request.body.id
-    }
-  });
+  try {
+    const recipe = await Recipe.findOne({
+      where: { id: request.params.id }
+    });
 
-  const ingredients = await recipe.getIngredients();
-  console.log(ingredients);
+    const ingredients = await recipe.getIngredients();
+
+    response.status(200).json(ingredients);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
