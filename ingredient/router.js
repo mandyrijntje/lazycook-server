@@ -1,5 +1,4 @@
 const express = require("express");
-// const { Op } = require("sequelize");
 
 const Ingredient = require("./model");
 const router = express.Router();
@@ -10,15 +9,10 @@ router.get("/ingredient", (request, response, next) => {
   const offset = request.query.offset || 0;
   try {
     Ingredient.findAndCountAll({
-      // where: {
-      //   startDate: {
-      //     [Op.gte]: new Date()
-      //   }
-      // },
+
       limit,
       offset
     }).then(result => {
-      // console.log(result);
       return response.send({ ingredients: result.rows, total: result.count });
     });
   } catch (error) {
@@ -39,6 +33,17 @@ router.post("/ingredient", async (request, response, next) => {
     } = request.body;
     const entity = { name, imageUrl, isVegan, isVegetarian, hasNuts, hasDairy };
     const ingredient = await Ingredient.create(entity);
+    response.send(ingredient);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// get one ingredient
+router.get("/ingredient/:id", async (request, response, next) => {
+  try {
+    const { id } = request.params;
+    const ingredient = await Ingredient.findByPk(id);
     response.send(ingredient);
   } catch (error) {
     next(error);

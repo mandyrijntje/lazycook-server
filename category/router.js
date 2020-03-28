@@ -34,8 +34,6 @@ router.post("/category", async (request, response, next) => {
 // get all ingredients for a specific category
 router.get("/category/:categoryId/ingredient", (request, response, next) => {
   Ingredient.findAll({
-    // limit,
-    // offset,
     where: { categoryId: request.params.categoryId }
   })
     .then(ingredient => {

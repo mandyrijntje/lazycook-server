@@ -64,4 +64,29 @@ router.post("/recipe", async (request, response, next) => {
   }
 });
 
+// get one recipe
+router.get("/recipe/:id", async (request, response, next) => {
+  try {
+    const { id } = request.params;
+    const recipe = await Recipe.findByPk(id);
+    response.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// get all ingredients for a recipe
+router.get("/recipe/:id/ingredient", async (request, response, next) => {
+  const recipe = await Recipe.findOne({
+    where: {
+      id: request.body.id
+    }
+  });
+
+  const ingredients = await recipe.getIngredients();
+  console.log(ingredients);
+});
+
+module.exports = router;
+
 module.exports = router;
