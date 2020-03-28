@@ -1,6 +1,8 @@
 const db = require("../db");
 const Sequelize = require("sequelize");
 
+const User = require("../user/model");
+
 const Recipe = db.define("recipe", {
   name: {
     type: Sequelize.STRING,
@@ -46,5 +48,8 @@ const Recipe = db.define("recipe", {
     allowNull: false
   }
 });
+
+Recipe.belongsTo(User);
+User.hasMany(Recipe);
 
 module.exports = Recipe;

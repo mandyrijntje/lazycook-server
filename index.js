@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRouter = require("./auth/router");
 const userRouter = require("./user/router");
 const ingredientRouter = require("./ingredient/router");
+const categoryRouter = require("./category/router");
 const recipeRouter = require("./recipe/router");
 const recipeIngredientRouter = require("./recipeIngredient/router");
 
@@ -20,5 +21,6 @@ app.use(jsonParser);
 app.use(authRouter);
 app.use(userRouter);
 app.use(ingredientRouter);
+app.use(categoryRouter);
 app.use(recipeRouter);
 app.use(recipeIngredientRouter);
