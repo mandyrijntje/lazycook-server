@@ -24,25 +24,26 @@ router.get("/recipe", (request, response, next) => {
 
 //POST many-to-many steps that I've used
 
-// 1. request.body.ingredients = [{"id":2}, {"id": 5}, {"id": 6}] 
+// 1. request.body.ingredients = [{"id":2}, {"id": 5}, {"id": 6}]
 //(or whatever your new object needs to have)
 
 // 2. httpie without ingredients
-// http :4000/recipe name="ee" imageUrl="rr" step1='ee' isVegan='true' isVegetarian='true' hasNuts='false' hasDairy='false' 
+// http :4000/recipe name="ee" imageUrl="rr" step1='ee' isVegan='true' isVegetarian='true' hasNuts='false' hasDairy='false'
 
 // 3. https://stackoverflow.com/questions/37215565/sending-nested-json-object-using-httpie
 
-// 4. httpie WITH ingredients 
+// 4. httpie WITH ingredients
 // http :4000/recipe name="ee" imageUrl="rr" step1='ee' isVegan='true' isVegetarian='true' hasNuts='false' hasDairy='false' ingredients:='[{"id":2}, {"id":5}]'
 
 // 5. Adjusting optionalIngredient as needed in PostgresQL database
 
-router.post("/recipe", async (request, response, next) => {
+router.post("/users/:userId/recipe", auth, async (request, response, next) => {
   try {
     // 1. Recipe (name, imageUrl, ...)
-    const savedRecipe = await Recipe.create(
-      request.body
-    );
+    const savedRecipe = await Recipe.create({
+      ...request.body,
+      userId: request.user.userId
+    });
 
     // 2. Finding these -> Ingredient (name, imageUrl, ...)
 
@@ -62,7 +63,9 @@ router.post("/recipe", async (request, response, next) => {
     // throwing an error if one of them is null
     for (const ingredient of ingredients) {
       if (!ingredient) {
-        return response.status(400).json({ error: "UFI: Unidentified flying ingredient" });
+        return response
+          .status(400)
+          .json({ error: "UFI: Unidentified flying ingredient" });
       }
     }
 
