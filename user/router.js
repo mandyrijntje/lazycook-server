@@ -98,46 +98,46 @@ router.get("/users/:userId/recipe/:id", (request, response, next) => {
     .catch(next);
 });
 
-// post a recipe for user
-router.post("/users/:userId/recipe", auth, async (request, response, next) => {
-  try {
-    const {
-      name,
-      imageUrl,
-      step1,
-      step2,
-      step3,
-      step4,
-      step5,
-      step6,
-      isVegan,
-      isVegetarian,
-      hasNuts,
-      hasDairy
-    } = request.body;
-    const entity = {
-      name,
-      imageUrl,
-      step1,
-      step2,
-      step3,
-      step4,
-      step5,
-      step6,
-      isVegan,
-      isVegetarian,
-      hasNuts,
-      hasDairy
-    };
-    const recipe = await Recipe.create({
-      ...entity,
-      userId: request.user.userId
-    });
-    response.send(recipe);
-  } catch (error) {
-    next(error);
-  }
-});
+// // post a recipe for user
+// router.post("/users/:userId/recipe", auth, async (request, response, next) => {
+//   try {
+//     const {
+//       name,
+//       imageUrl,
+//       step1,
+//       step2,
+//       step3,
+//       step4,
+//       step5,
+//       step6,
+//       isVegan,
+//       isVegetarian,
+//       hasNuts,
+//       hasDairy
+//     } = request.body;
+//     const entity = {
+//       name,
+//       imageUrl,
+//       step1,
+//       step2,
+//       step3,
+//       step4,
+//       step5,
+//       step6,
+//       isVegan,
+//       isVegetarian,
+//       hasNuts,
+//       hasDairy
+//     };
+//     const recipe = await Recipe.create({
+//       ...entity,
+//       userId: request.user.userId
+//     });
+//     response.send(recipe);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // Delete all user's recipes
 router.delete("/users/:userId/recipe", auth, (request, response, next) => {

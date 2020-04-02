@@ -40,10 +40,11 @@ router.get("/recipe", (request, response, next) => {
 
 router.post("/users/:userId/recipe", auth, async (request, response, next) => {
   try {
+    console.log(request.user);
     // 1. Recipe (name, imageUrl, ...)
     const savedRecipe = await Recipe.create({
       ...request.body,
-      userId: request.user.userId
+      userId: request.user.dataValues.id
     });
 
     // 2. Finding these -> Ingredient (name, imageUrl, ...)
