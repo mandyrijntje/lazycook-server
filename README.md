@@ -55,7 +55,7 @@ PROS: Will teach you how to boil an egg
 4. **Connect server to client** ->
 
 
-    ```
+   
     [Clone this repository and follow the readme](https://github.com/messmonte/lazycook-client)
     ```
 
