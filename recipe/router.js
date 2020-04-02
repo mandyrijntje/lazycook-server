@@ -11,6 +11,7 @@ router.get("/recipe", (request, response, next) => {
   const offset = request.query.offset || 0;
   try {
     Recipe.findAndCountAll({
+      include: [Ingredient],
       limit,
       offset
     }).then(result => {
@@ -94,27 +95,31 @@ router.post("/users/:userId/recipe", auth, async (request, response, next) => {
 router.get("/recipe/:id", async (request, response, next) => {
   try {
     const { id } = request.params;
-    const recipe = await Recipe.findByPk(id);
+    const recipe = await Recipe.findOne({
+      where: { id: request.params.id },
+      include: [Ingredient]
+    });
     response.send(recipe);
   } catch (error) {
     next(error);
   }
 });
 
-// get all ingredients for a recipe
-router.get("/recipe/:id/ingredient", async (request, response, next) => {
-  try {
-    const recipe = await Recipe.findOne({
-      where: { id: request.params.id }
-    });
+// // get all ingredients for a recipe
+// router.get("/recipe/:id/ingredient", async (request, response, next) => {
+//   try {
+//     const recipe = await Recipe.findOne({
+//       where: { id: request.params.id },
+//       include: [Ingredient]
+//     });
 
-    const ingredients = await recipe.getIngredients();
+//     // const ingredients = await recipe.getIngredients();
 
-    response.status(200).json(ingredients);
-  } catch (error) {
-    next(error);
-  }
-});
+//     response.status(200).json(recipe);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 //update a recipe for a user
 router.put("/recipe/:recipeId", auth, (request, response, next) => {
