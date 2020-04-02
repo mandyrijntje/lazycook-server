@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const auth = require("../auth/middleware");
 const User = require("./model");
 const Recipe = require("../recipe/model");
+const Ingredient = require("../ingredient/model");
 const { toJWT, toData } = require("../auth/jwt");
 
 const router = express.Router();
@@ -69,7 +70,10 @@ router.get("/users/:userId", (request, response, next) => {
 
 // Get all user's recipes
 router.get("/users/:userId/recipe", (request, response, next) => {
-  Recipe.findAll({ where: { userId: request.params.userId } })
+  Recipe.findAll({
+    where: { userId: request.params.userId },
+    include: [Ingredient]
+  })
     .then(recipe => {
       response.json(recipe);
     })
