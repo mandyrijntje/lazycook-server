@@ -86,7 +86,12 @@ router.post("/users/:userId/recipe", auth, async (request, response, next) => {
     // Now we have one big Promise of an array
     await Promise.all(listOfPromises);
 
-    return response.status(200).json(savedRecipe);
+    const updatedRecipes = await Recipe.findAll({
+      where: { userId: request.user.dataValues.id },
+      include: [Ingredient]
+    });
+    // console.log(result);
+    response.send(updatedRecipes);
   } catch (error) {
     next(error);
   }

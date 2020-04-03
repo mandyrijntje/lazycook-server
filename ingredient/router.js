@@ -64,4 +64,19 @@ router.get("/ingredient/:id/recipe", async (request, response, next) => {
   }
 });
 
+// get recipe for many ingredients
+router.get("/kitchen/recipe", async (request, response, next) => {
+  try {
+    const recipe = await Recipe.findAll({
+      where: { id: request.body.id }
+    });
+//i need a way to find the recipe whose RI table ingredients ids are the same as selected ingredient's ids
+    const recipes = await ingredient.getRecipes();
+
+    response.status(200).json(recipes);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
