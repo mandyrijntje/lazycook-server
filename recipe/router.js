@@ -7,7 +7,7 @@ const router = express.Router();
 
 // get all recipes
 router.get("/recipe", (request, response, next) => {
-  const limit = Math.min(request.query.limit || 100, 200);
+  const limit = Math.min(request.query.limit || 10, 50);
   const offset = request.query.offset || 0;
   try {
     Recipe.findAndCountAll({
@@ -128,20 +128,64 @@ router.get("/recipe/:id", async (request, response, next) => {
 // });
 
 //update a recipe for a user
-router.put("/recipe/:recipeId", auth, (request, response, next) => {
-  Recipe.findOne({
-    where: {
-      recipeId: request.params.recipeId
-    }
-  })
-    .then(recipe => {
-      if (recipe) {
-        recipe.update(request.body).then(recipe => response.json(recipe));
-      } else {
-        response.status(404).end();
+router.put("/recipe/:id", auth, async (request, response, next) => {
+  try {
+    const foundRecipe = await Recipe.findOne({
+      where: {
+        id: request.params.id
       }
-    })
-    .catch(next);
+    });
+    const updatedRecipe = await foundRecipe.update({
+      ...request.body,
+      userId: request.user.dataValues.id
+    });
+
+    const deletedRIs = await RecipeIngredient.destroy({
+      where: {
+        recipeId: request.params.id
+      }
+    });
+    request.body.ingredients.map(item => {
+      RecipeIngredient.create({
+        optionalIngredient: false,
+        recipeId: request.params.id,
+        ingredientId: item.id
+      });
+    });
+
+    // const ingredientsPromise = Promise.all(ingredientsPromises);
+
+    // const ingredients = await ingredientsPromise;
+
+    // for (const ingredient of ingredients) {
+    //   if (!ingredient) {
+    //     return response
+    //       .status(400)
+    //       .json({ error: "UFI: Unidentified flying ingredient" });
+    //   }
+    // }
+
+    // const listOfPromises = ingredients.map(async ingredient => {
+    //   const recipeingredient = {
+    //     optionalIngredient: false,
+    //     recipeId: updatedRecipe.id,
+    //     ingredientId: ingredient.id
+    //   };
+
+    // await RecipeIngredient.create(recipeingredient);
+    // });
+
+    // await Promise.all(listOfPromises);
+
+    const updatedRecipes = await Recipe.findAll({
+      where: { userId: request.user.dataValues.id },
+      include: [Ingredient]
+    });
+
+    response.send(updatedRecipes);
+  } catch (error) {
+    next(error);
+  }
 });
 
 //delete a recipe for a user

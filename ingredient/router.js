@@ -1,5 +1,5 @@
 const express = require("express");
-
+const Recipe = require("../recipe/model");
 const Ingredient = require("./model");
 const router = express.Router();
 
@@ -67,13 +67,29 @@ router.get("/ingredient/:id/recipe", async (request, response, next) => {
 // get recipe for many ingredients
 router.get("/kitchen/recipe", async (request, response, next) => {
   try {
-    const recipe = await Recipe.findAll({
-      where: { id: request.body.id }
+    const allRecipes = Recipe.findAll({
+      include: [Ingredient]
     });
-//i need a way to find the recipe whose RI table ingredients ids are the same as selected ingredient's ids
-    const recipes = await ingredient.getRecipes();
 
-    response.status(200).json(recipes);
+    let uniqueRecipe;
+    const ingredientWishlist = request.body.ingredients
+    allRecipes.forEach(recipe => {
+      for (let i = 0; i < recipe.ingredients.length; i++) {
+        let boolean = false;
+        for (let j = 0; j < ingredientWishlist.length; j++) {
+          if (recipe.ingredients[i].id === ingredientWishlist[j].id) {
+            boolean = true;
+          }
+        }
+        if (!boolean) {
+          return;
+        }
+        if (i === recipe.ingredients.length - 1) {
+          uniqueRecipe = recipe;
+        }
+      }
+    });
+    response.status(200).json(uniqueRecipe);
   } catch (error) {
     next(error);
   }
