@@ -153,29 +153,6 @@ router.put("/recipe/:id", auth, async (request, response, next) => {
       });
     });
 
-    // const ingredientsPromise = Promise.all(ingredientsPromises);
-
-    // const ingredients = await ingredientsPromise;
-
-    // for (const ingredient of ingredients) {
-    //   if (!ingredient) {
-    //     return response
-    //       .status(400)
-    //       .json({ error: "UFI: Unidentified flying ingredient" });
-    //   }
-    // }
-
-    // const listOfPromises = ingredients.map(async ingredient => {
-    //   const recipeingredient = {
-    //     optionalIngredient: false,
-    //     recipeId: updatedRecipe.id,
-    //     ingredientId: ingredient.id
-    //   };
-
-    // await RecipeIngredient.create(recipeingredient);
-    // });
-
-    // await Promise.all(listOfPromises);
 
     const updatedRecipes = await Recipe.findAll({
       where: { userId: request.user.dataValues.id },
