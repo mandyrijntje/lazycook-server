@@ -10,8 +10,8 @@ router.get("/ingredient", (request, response, next) => {
   try {
     Ingredient.findAndCountAll({
       limit,
-      offset
-    }).then(result => {
+      offset,
+    }).then((result) => {
       return response.send({ ingredients: result.rows, total: result.count });
     });
   } catch (error) {
@@ -28,7 +28,7 @@ router.post("/ingredient", async (request, response, next) => {
       isVegan,
       isVegetarian,
       hasNuts,
-      hasDairy
+      hasDairy,
     } = request.body;
     const entity = { name, imageUrl, isVegan, isVegetarian, hasNuts, hasDairy };
     const ingredient = await Ingredient.create(entity);
@@ -53,7 +53,7 @@ router.get("/ingredient/:id", async (request, response, next) => {
 router.get("/ingredient/:id/recipe", async (request, response, next) => {
   try {
     const ingredient = await Ingredient.findOne({
-      where: { id: request.params.id }
+      where: { id: request.params.id },
     });
 
     const recipes = await ingredient.getRecipes();
@@ -65,31 +65,41 @@ router.get("/ingredient/:id/recipe", async (request, response, next) => {
 });
 
 // get recipe for many ingredients
-router.get("/kitchen/recipe", async (request, response, next) => {
+router.post("/kitchen/recipe", (request, response, next) => {
   try {
-    const allRecipes = Recipe.findAll({
-      include: [Ingredient]
-    });
-
-    let uniqueRecipe;
-    const ingredientWishlist = request.body.ingredients
-    allRecipes.forEach(recipe => {
-      for (let i = 0; i < recipe.ingredients.length; i++) {
-        let boolean = false;
+    Recipe.findAll({
+      include: [Ingredient],
+    }).then((result) => {
+      let uniqueRecipe = {
+        dataValues: {
+          name: "No Recipe",
+        },
+      };
+      const ingredientWishlist = request.body.ingredients;
+      console.log("ooo", ingredientWishlist);
+      console.log("res", result);
+      result.forEach((recipe) => {
         for (let j = 0; j < ingredientWishlist.length; j++) {
-          if (recipe.ingredients[i].id === ingredientWishlist[j].id) {
-            boolean = true;
+          let boolean = false;
+          for (let i = 0; i < recipe.dataValues.ingredients.length; i++) {
+            if (
+              ingredientWishlist[j].id === recipe.dataValues.ingredients[i].id
+            ) {
+              boolean = true;
+            }
+          }
+          if (!boolean) {
+            return;
+          }
+          if (j === ingredientWishlist.length - 1 && boolean) {
+            uniqueRecipe = recipe;
+            return;
           }
         }
-        if (!boolean) {
-          return;
-        }
-        if (i === recipe.ingredients.length - 1) {
-          uniqueRecipe = recipe;
-        }
-      }
+      });
+      console.log("uniq", uniqueRecipe);
+      response.status(200).json(uniqueRecipe);
     });
-    response.status(200).json(uniqueRecipe);
   } catch (error) {
     next(error);
   }
