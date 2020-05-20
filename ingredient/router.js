@@ -76,20 +76,22 @@ router.post("/kitchen/recipe", (request, response, next) => {
         },
       };
       const ingredientWishlist = request.body.ingredients;
-      // console.log("ooo", ingredientWishlist);
-      // console.log("res", result);
       result.forEach((recipe) => {
         for (let j = 0; j < ingredientWishlist.length; j++) {
           let boolean = false;
-          for (let i = 0; i < recipe.dataValues.ingredients.length; i++) {
-            if (
-              ingredientWishlist[j].id === recipe.dataValues.ingredients[i].id
-            ) {
-              boolean = true;
+          if (
+            ingredientWishlist.length === recipe.dataValues.ingredients.length
+          ) {
+            for (let i = 0; i < recipe.dataValues.ingredients.length; i++) {
+              if (
+                ingredientWishlist[j].id === recipe.dataValues.ingredients[i].id
+              ) {
+                boolean = true;
+              }
             }
-          }
-          if (!boolean) {
-            return;
+            if (!boolean) {
+              return;
+            }
           }
           if (j === ingredientWishlist.length - 1 && boolean) {
             uniqueRecipe = recipe;
@@ -97,7 +99,6 @@ router.post("/kitchen/recipe", (request, response, next) => {
           }
         }
       });
-      // console.log("uniq", uniqueRecipe);
       response.status(200).json(uniqueRecipe);
     });
   } catch (error) {
