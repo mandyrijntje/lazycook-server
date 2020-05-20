@@ -40,7 +40,7 @@ router.get("/recipe", (request, response, next) => {
 
 router.post("/users/:userId/recipe", auth, async (request, response, next) => {
   try {
-    console.log(request.user);
+    // console.log(request.user);
     // 1. Recipe (name, imageUrl, ...)
     const savedRecipe = await Recipe.create({
       ...request.body,
@@ -166,10 +166,11 @@ router.put("/recipe/:id", auth, async (request, response, next) => {
 });
 
 //delete a recipe for a user
-router.delete("/recipe/:recipeId", auth, (request, response, next) => {
+router.delete("/recipe/:id", auth, (request, response, next) => {
   Recipe.destroy({
     where: {
-      recipeId: request.params.recipeId
+      id: request.params.id,
+      userId: request.user.dataValues.id
     }
   })
     .then(numDeleted => {

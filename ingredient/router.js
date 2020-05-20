@@ -76,8 +76,8 @@ router.post("/kitchen/recipe", (request, response, next) => {
         },
       };
       const ingredientWishlist = request.body.ingredients;
-      console.log("ooo", ingredientWishlist);
-      console.log("res", result);
+      // console.log("ooo", ingredientWishlist);
+      // console.log("res", result);
       result.forEach((recipe) => {
         for (let j = 0; j < ingredientWishlist.length; j++) {
           let boolean = false;
@@ -97,7 +97,7 @@ router.post("/kitchen/recipe", (request, response, next) => {
           }
         }
       });
-      console.log("uniq", uniqueRecipe);
+      // console.log("uniq", uniqueRecipe);
       response.status(200).json(uniqueRecipe);
     });
   } catch (error) {
