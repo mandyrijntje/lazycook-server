@@ -15,7 +15,6 @@ router.get("/recipe", (request, response, next) => {
       limit,
       offset
     }).then(result => {
-      // console.log(result);
       return response.send({ recipes: result.rows, total: result.count });
     });
   } catch (error) {
@@ -23,12 +22,12 @@ router.get("/recipe", (request, response, next) => {
   }
 });
 
-//POST many-to-many steps that I've used
+//POST many-to-many steps used
 
 // 1. request.body.ingredients = [{"id":2}, {"id": 5}, {"id": 6}]
 //(or whatever your new object needs to have)
 
-// 2. httpie without ingredients
+// 2. log httpie without ingredients
 // http :4000/recipe name="ee" imageUrl="rr" step1='ee' isVegan='true' isVegetarian='true' hasNuts='false' hasDairy='false'
 
 // 3. https://stackoverflow.com/questions/37215565/sending-nested-json-object-using-httpie
@@ -40,7 +39,6 @@ router.get("/recipe", (request, response, next) => {
 
 router.post("/users/:userId/recipe", auth, async (request, response, next) => {
   try {
-    // console.log(request.user);
     // 1. Recipe (name, imageUrl, ...)
     const savedRecipe = await Recipe.create({
       ...request.body,
@@ -90,7 +88,6 @@ router.post("/users/:userId/recipe", auth, async (request, response, next) => {
       where: { userId: request.user.dataValues.id },
       include: [Ingredient]
     });
-    // console.log(result);
     response.send(updatedRecipes);
   } catch (error) {
     next(error);
