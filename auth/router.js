@@ -4,6 +4,7 @@ const { toJWT } = require("./jwt");
 const User = require("../user/model");
 const auth = require("./middleware");
 const Recipe = require("../recipe/model");
+const Ingredient = require("../ingredient/model");
 
 const router = new Router();
 
@@ -15,17 +16,28 @@ router.post("/login", (request, response, next) => {
   } else {
     User.findOne({ where: { email: request.body.email }, include: [Recipe] })
       .then((user) => {
+        console.log(user);
         if (!user) {
           response
             .status(400)
             .send({ message: "User with that email doesn't exist" });
         } else if (bcrypt.compareSync(request.body.password, user.password)) {
-          console.log(user.recipes);
-          response.send({
-            id: user.id,
-            email: user.email,
-            jwt: toJWT({ userId: user.id }),
-            recipes: user.recipes,
+          let recipesWithIngs = [];
+          user.recipes.forEach((recipe, index) => {
+            Recipe.findOne({
+              where: { id: recipe.id },
+              include: [Ingredient],
+            }).then((rsp) => {
+              recipesWithIngs.push(rsp);
+              if (index === user.recipes.length - 1) {
+                response.send({
+                  id: user.id,
+                  email: user.email,
+                  jwt: toJWT({ userId: user.id }),
+                  recipes: recipesWithIngs,
+                });
+              }
+            });
           });
         } else {
           response.status(400).send({
