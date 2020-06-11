@@ -37,7 +37,7 @@ router.get("/recipe", (request, response, next) => {
 
 // 5. Adjusting optionalIngredient as needed in PostgresQL database
 
-router.post("/users/:userId/recipe", auth, async (request, response, next) => {
+router.post("/recipe", auth, async (request, response, next) => {
   try {
     // 1. Recipe (name, imageUrl, ...)
     const savedRecipe = await Recipe.create({
