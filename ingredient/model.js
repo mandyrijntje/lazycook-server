@@ -7,34 +7,34 @@ const RecipeIngredient = require("../recipeIngredient/model");
 const Ingredient = db.define("ingredient", {
   name: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
   },
   imageUrl: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
   },
   isVegan: {
     type: Sequelize.BOOLEAN,
-    allowNull: false
+    allowNull: false,
   },
   isVegetarian: {
     type: Sequelize.BOOLEAN,
-    allowNull: false
+    allowNull: false,
   },
   hasNuts: {
     type: Sequelize.BOOLEAN,
-    allowNull: false
+    allowNull: false,
   },
   hasDairy: {
     type: Sequelize.BOOLEAN,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 
 Ingredient.belongsToMany(Recipe, { through: RecipeIngredient });
 Recipe.belongsToMany(Ingredient, { through: RecipeIngredient });
 
-Ingredient.belongsTo(Category)
-Category.hasMany(Ingredient)
+Ingredient.belongsTo(Category);
+Category.hasMany(Ingredient);
 
 module.exports = Ingredient;

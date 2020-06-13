@@ -7,15 +7,15 @@ const router = express.Router();
 
 // get all recipes
 router.get("/recipe", (request, response, next) => {
-  const limit = Math.min(request.query.limit || 50, 100);
-  const offset = request.query.offset || 0;
+  // const limit = Math.min(request.query.limit || 50, 100);
+  // const offset = request.query.offset || 0;
   try {
-    Recipe.findAndCountAll({
+    Recipe.findAll({
       include: [Ingredient],
-      limit,
-      offset,
+      // limit,
+      // offset,
     }).then((result) => {
-      return response.send({ recipes: result.rows, total: result.count });
+      return response.send(result);
     });
   } catch (error) {
     next(error);
