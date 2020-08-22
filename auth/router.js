@@ -35,10 +35,8 @@ router.post("/login", (request, response, next) => {
               where: { id: recipe.id },
               include: [Ingredient],
             }).then((rsp) => {
-              console.log("recipes");
               recipesWithIngs.push(rsp);
               if (index === user.recipes.length - 1) {
-                console.log("recipes2");
                 response.send({
                   id: user.id,
                   email: user.email,
@@ -49,7 +47,6 @@ router.post("/login", (request, response, next) => {
             });
           });
         } else {
-          console.log("pw wrong");
           response.status(400).send({
             message: "password is incorrect",
           });
